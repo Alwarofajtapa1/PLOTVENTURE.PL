@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlotVenture</title>
+  <link rel="icon" href="https://i.imgur.com/1DBQlal.png" type="image/png" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4f46e5" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background: url('https://i.imgur.com/cjjsAQV.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+  <!-- Wybierz tło -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">🖼️ Wybierz tło</h2>
+    <div class="flex gap-4">
+      <button onclick="changeBackground('https://i.imgur.com/cjjsAQV.jpg')" class="p-2 border rounded">Tło 1</button>
+      <button onclick="changeBackground('https://i.imgur.com/8aJqKqL.jpg')" class="p-2 border rounded">Tło 2</button>
+      <button onclick="changeBackground('https://i.imgur.com/VK5kADv.jpg')" class="p-2 border rounded">Tło 3</button>
+    </div>
+  </section>
+
+  <!-- System ocen opinii -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">⭐ Oceń aplikację</h2>
+    <form id="ratingForm" class="space-y-4">
+      <label class="block">Wybierz ocenę:</label>
+      <div class="flex gap-2">
+        <span class="star text-3xl cursor-pointer">☆</span>
+        <span class="star text-3xl cursor-pointer">☆</span>
+        <span class="star text-3xl cursor-pointer">☆</span>
+        <span class="star text-3xl cursor-pointer">☆</span>
+        <span class="star text-3xl cursor-pointer">☆</span>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">Zapisz ocenę</button>
+      <div id="ratingStatus" class="text-sm text-green-500"></div>
+    </form>
+    <div id="ratingDisplay" class="mt-4 text-xl"></div>
+  </section>
+
+  <!-- Dodaj opinię -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">📝 Dodaj opinię</h2>
+    <form id="reviewForm" class="space-y-4">
+      <textarea id="reviewText" rows="4" placeholder="Napisz swoją opinię..." class="w-full p-2 border rounded dark:bg-gray-800"></textarea>
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Dodaj opinię</button>
+      <div id="reviewStatus" class="text-sm text-green-500"></div>
+    </form>
+  </section>
+
+  <!-- Lista opinii -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">💬 Opinie użytkowników</h2>
+    <div id="reviewList" class="space-y-4 border p-4 rounded bg-gray-100 dark:bg-gray-800 max-h-80 overflow-y-auto"></div>
+  </section>
+
+  <!-- Wyszukiwarka opinii -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">🔍 Wyszukaj w opiniach</h2>
+    <input type="text" id="searchInput" placeholder="Szukaj..." class="w-full p-2 border rounded dark:bg-gray-800" />
+  </section>
+
+  <!-- Zegar na żywo -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">🕒 Aktualny czas</h2>
+    <div id="liveClock" class="text-xl font-mono"></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">❓ FAQ</h2>
+    <ul class="space-y-4">
+      <li><strong>Czy moje dane są bezpieczne?</strong><br>Tak, dane przechowywane są tylko lokalnie w Twojej przeglądarce.</li>
+      <li><strong>Jak dodać opinię?</strong><br>Wypełnij formularz w sekcji opinii i kliknij "Dodaj opinię".</li>
+      <li><strong>Czy mogę usunąć swoje opinie?</strong><br>Tak, użyj przycisku poniżej do zresetowania danych lokalnych.</li>
+    </ul>
+  </section>
+
+  <!-- O autorze -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">👨‍💻 O autorze</h2>
+    <p>Projekt PlotVenture został stworzony jako narzędzie do testowania interakcji front-endowych bez konieczności użycia backendu. Autor: TwójNick.</p>
+  </section>
+
+  <!-- Dodatkowe narzędzia -->
+  <section class="max-w-5xl mx-auto px-4 py-10" data-aos="fade-up">
+    <h2 class="text-4xl font-bold mb-6">🛠️ Narzędzia użytkownika</h2>
+    <button onclick="downloadReviews()" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">📥 Pobierz opinie</button>
+    <button onclick="clearLocalStorage()" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded ml-2">🗑️ Resetuj dane</button>
+  </section>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    // --- Zmiana tła ---
+    function changeBackground(url) {
+      document.body.style.backgroundImage = `url('${url}')`;
+      localStorage.setItem('bg', url);
+    }
+    const savedBg = localStorage.getItem('bg');
+    if (savedBg) changeBackground(savedBg);
+
+    // --- Gwiazdki ocen ---
+    const stars = document.querySelectorAll('.star');
+    let selectedRating = 0;
+    stars.forEach((star, index) => {
+      star.addEventListener('click', () => {
+        selectedRating = index + 1;
+        stars.forEach((s, i) => s.textContent = i < selectedRating ? '★' : '☆');
+      });
+    });
+    document.getElementById('ratingForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (selectedRating === 0) {
+        alert("Wybierz ocenę przed zapisem!");
+        return;
+      }
+      localStorage.setItem('rating', selectedRating);
+      document.getElementById('ratingStatus').textContent = "Ocena zapisana!";
+      displayRating();
+    });
+    function displayRating() {
+      const r = localStorage.getItem('rating') || 0;
+      document.getElementById('ratingDisplay').textContent = `Twoja ocena: ${'★'.repeat(r)}${'☆'.repeat(5 - r)}`;
+      // Ustaw gwiazdki wizualnie
+      stars.forEach((s, i) => s.textContent = i < r ? '★' : '☆');
+    }
+    displayRating();
+
+    // --- Obsługa opinii ---
+    function getReviews() {
+      const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+      return reviews;
+    }
+
+    function saveReviews(reviews) {
+      localStorage.setItem('reviews', JSON.stringify(reviews));
+    }
+
+    function addReview(text) {
+      if (!text.trim()) return false;
+      const reviews = getReviews();
+      const newReview = {
+        id: Date.now(),
+        text: text.trim()
+      };
+      reviews.unshift(newReview); // dodaj na początek
+      saveReviews(reviews);
+      return true;
+    }
+
+    function displayReviews() {
+      const container = document.getElementById('reviewList');
+      const reviews = getReviews();
+      container.innerHTML = '';
+      if (reviews.length === 0) {
+        container.textContent = 'Brak opinii.';
+        return;
+      }
+      reviews.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-white dark:bg-gray-700 rounded shadow';
+        div.textContent = r.text;
+        container.appendChild(div);
+      });
+    }
+    displayReviews();
+
+    // Obsługa formularza dodawania opinii
+    document.getElementById('reviewForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const text = document.getElementById('reviewText').value;
+      if (addReview(text)) {
+        document.getElementById('reviewText').value = '';
+        document.getElementById('reviewStatus').textContent = 'Opinia dodana!';
+        displayReviews();
+        setTimeout(() => {
+          document.getElementById('reviewStatus').textContent = '';
+        }, 3000);
+      } else {
+        alert('Nie możesz dodać pustej opinii!');
+      }
+    });
+
+    // --- Wyszukiwanie opinii ---
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const query = this.value.toLowerCase();
+      const reviewDivs = document.querySelectorAll('#reviewList > div');
+      reviewDivs.forEach(div => {
+        div.style.display = div.textContent.toLowerCase().includes(query) ? 'block' : 'none';
+      });
+    });
+
+    // --- Zegar na żywo ---
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString();
+      document.getElementById('liveClock').textContent = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- Pobierz opinie jako plik tekstowy ---
+    function downloadReviews() {
+      const reviews = getReviews();
+      if (reviews.length === 0) {
+        alert('Brak opinii do pobrania.');
+        return;
+      }
+      const text = reviews.map(r => r.text).join('\n\n');
+      const blob = new Blob([text], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'opinie.txt';
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Resetuj dane ---
+    function clearLocalStorage() {
+      if (confirm("Na pewno chcesz usunąć wszystkie dane lokalne (oceny, opinie, tło)?")) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
